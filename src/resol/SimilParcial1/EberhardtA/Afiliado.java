@@ -99,9 +99,4 @@ public Empleado getAgenteAfiliador() {
 public void setAgenteAfiliador(Empleado agenteAfiliador) {
 	this.agenteAfiliador = agenteAfiliador;
 }
-
-
-
-
-
 }

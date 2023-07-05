@@ -10,6 +10,7 @@ private String localidad;
 private String razonSocial;
 private ArrayList<Persona>personas;
 private HashMap<Integer, String>localidades;
+private ArrayList<Domicilio>domicilios;
 Scanner scanner = new Scanner(System.in);
 public ObraSocial(String direccion, String localidad, String razonSocial) {
 	this.direccion = direccion;
@@ -17,6 +18,7 @@ public ObraSocial(String direccion, String localidad, String razonSocial) {
 	this.razonSocial = razonSocial;
 	this.personas = new ArrayList();
 	this.localidades = new HashMap();
+	this.domicilios = new ArrayList();
 }
 //localidades
 public void mostrarLocalidades() {
@@ -38,6 +40,7 @@ public void agregarLocalidad(int codArea, String localidad) {
 }
 public void agregarLocalidad() {
 	System.out.println("-------------------");
+	scanner.nextLine();
 	System.out.println("Ingrese nombre de localidad: ");
 	String nom = scanner.nextLine();
 	System.out.println("Ingrese codigo de area: ");
@@ -45,6 +48,15 @@ public void agregarLocalidad() {
 	localidades.put(cod, nom);
 }
 //persona
+public Persona buscarPersonaDni(int dni) {
+	for (int i=0; i<personas.size();i++) {
+		if (personas.get(i).getDni()==dni) {
+			return personas.get(i);
+		}
+	}
+	System.out.println("No se encontro persona.");
+	return null;
+}
 public void mostrarPersona() {
 	System.out.println("----------------------------");
 	System.out.println("Ingrese que desea listar: ");
@@ -79,22 +91,30 @@ public void mostrarPersona() {
 public void agregarPersona(Persona persona) {
 	personas.add(persona);
 }
+public void mismoDomicilio() {
+	Persona persona1;
+	Persona persona2;
+	System.out.println("Ingrese Dni de la primera persona: ");
+	int dni = scanner.nextInt();
+	persona1=buscarPersonaDni(dni);
+	System.out.println("Ingrese Dni de la segunda persona: ");
+	int dni2= scanner.nextInt();
+	persona2=buscarPersonaDni(dni2);
+	if (persona1!=null && persona2!=null) { 
+		if(persona1.getDomicilio().equals(persona2.getDomicilio())) {
+			System.out.println(persona1.getNombre()+" "+persona1.getApellido()+" comparte el domicilio con " +persona2.getNombre()+" "+ persona2.getApellido());
+		}else {
+			System.out.println(persona1.getNombre()+" "+persona1.getApellido()+" NO comparte el domicilio con " +persona2.getNombre()+" "+ persona2.getApellido());
+		}
+	}else {
+		System.out.println("No se encontro una/las dos personas");
+		}		
+}
 //Empleado
 public void cargarEmpleado() {
 	Empleado empleado = new Empleado();
 	System.out.println("Carga de domicilio");
-	Domicilio domicilio = new Domicilio();
-	System.out.println("Localidad:");
-	System.out.println("Localidades con cobertura: ");
-	mostrarLocalidades();
-	int cod=0;
-	do {
-	System.out.println("Ingrese codigo de area: ");
-	cod = scanner.nextInt();
-	}while(validarLocalidad(cod)!=true);
-	System.out.println("Validacion correcta!");
-	domicilio.setLocalidad(cod);
-	empleado.setDomicilio(domicilio);
+	cargarDomicilio(empleado);
 	personas.add(empleado);
 }
 public void mostrarAgentesAfiliadores() {
@@ -123,7 +143,31 @@ public void cargarAfiliado() {
 		}
 	}
 	System.out.println("Carga de domicilio");
-	Domicilio domicilio = new Domicilio();
+	cargarDomicilio(afiliado);
+	personas.add(afiliado);
+}
+//domicilios
+public void agregarDomicilio(Domicilio domicilio) {
+	domicilios.add(domicilio);
+}
+public int buscarDomicilio(String barrio, String calle, int nro, int cod) {
+	for(int i=0;i<domicilios.size();i++) {
+		if (domicilios.get(i).getBarrio().equalsIgnoreCase(barrio) && domicilios.get(i).getCalle().equalsIgnoreCase(calle) && domicilios.get(i).getNro()==nro && domicilios.get(i).getLocalidad()==cod) {
+			return i;
+		}
+	}
+		return -1;
+}
+public void cargarDomicilio(Persona persona) {
+	System.out.println("-----------------------");
+	scanner.nextLine();
+	System.out.println("Ingrese barrio: ");
+	String barrio=scanner.nextLine().toLowerCase();;
+	System.out.println("Ingrese calle: ");
+	String calle=scanner.nextLine().toLowerCase();
+	System.out.println("Ingrese nro: ");
+	int nro=scanner.nextInt();
+	System.out.println("-----------------------");
 	System.out.println("Localidad:");
 	System.out.println("Localidades con cobertura: ");
 	mostrarLocalidades();
@@ -133,14 +177,19 @@ public void cargarAfiliado() {
 	cod = scanner.nextInt();
 	}while(validarLocalidad(cod)!=true);
 	System.out.println("Validacion correcta!");
-	domicilio.setLocalidad(cod);
-	afiliado.setDomicilio(domicilio);	
-	personas.add(afiliado);
+	int o=buscarDomicilio(barrio, calle, nro, cod);
+	if (o>=0) {
+		persona.setDomicilio(domicilios.get(o));
+	}else {
+		Domicilio domicilio = new Domicilio(barrio, calle, nro ,cod);
+		persona.setDomicilio(domicilio);
+		domicilios.add(domicilio);
+	}
 }
-//domicilios
-public void agregarDomicilio(String barrio, String calle, int nro, int localidad) {
-	Domicilio domicilio = new Domicilio(barrio, calle, nro, localidad);
-	
+public void mostrarDomicilios() {
+	for(int i=0;i<domicilios.size();i++) {
+		domicilios.get(i).mostrar();
+	}
 }
 //mostrar obra social
 public void mostrar() {
@@ -193,8 +242,11 @@ public HashMap<Integer, String> getLocalidades() {
 public void setLocalidades(HashMap<Integer, String> localidades) {
 	this.localidades = localidades;
 }
-
-
-
+public ArrayList<Domicilio> getDomicilios() {
+	return domicilios;
+}
+public void setDomicilios(ArrayList<Domicilio> domicilios) {
+	this.domicilios = domicilios;
+}
 
 }

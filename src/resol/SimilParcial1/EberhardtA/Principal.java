@@ -9,17 +9,10 @@ public class Principal {
 		System.out.println("1: Mostrar Informacion Obra Social");
 		System.out.println("2: Registrar nuevo afiliado");
 		System.out.println("3: Registrar nuevo empleado");
-		System.out.println("4: Son estos 2 socios familiares?");
+		System.out.println("4: Son estas 2 personas familiares?");
 		System.out.println("5: Mostrar persona");
-		System.out.println("6: ");
-		System.out.println("7: ");
-		System.out.println("8: ");
-		System.out.println("9: ");
-		System.out.println("10:");
-		System.out.println("11: ");
-		System.out.println("12: ");
-		System.out.println("13: ");
-		
+		System.out.println("6: Agregar localidad");
+		System.out.println("7: Mostrar domicilios existentes");
 		System.out.println("q: Salir");	
 		System.out.println("");
 		Scanner scanner = new Scanner(System.in);
@@ -35,6 +28,9 @@ public class Principal {
 		Domicilio domicilio = new Domicilio ("Guadalupe", "Sarimiento",2365, 3000);
 		Domicilio domicilio1 = new Domicilio ("Centenario", "San martin",4232, 3000);
 		Domicilio domicilio2 = new Domicilio ("Los Hornos", "Guemes",777, 3016);
+		obrasoc.agregarDomicilio(domicilio);
+		obrasoc.agregarDomicilio(domicilio1);
+		obrasoc.agregarDomicilio(domicilio2);
 		Empleado empleado1 = new Empleado("Perez", "Juan", "Masculino", 20123123, "10/10/88", domicilio, "10/10/2000", cargo.ESPECIALIZADO);
 		Empleado empleado2 = new Empleado("Alves", "Daniel", "Masculino", 1988523, "10/10/99", domicilio1, "10/10/2000", cargo.AGENTE_AFILIADOR);
 		Empleado empleado3 = new Empleado("Lujan", "Lara", "Femenino", 40252698, "25/03/2000", domicilio2, "10/10/2000", cargo.AGENTE_AFILIADOR);
@@ -59,9 +55,22 @@ public class Principal {
 				obrasoc.cargarEmpleado();
 				break;
 			case "4":
+				obrasoc.mismoDomicilio();
 				break;
 			case "5":
 				obrasoc.mostrarPersona();
+				break;
+			case "6":
+				obrasoc.agregarLocalidad();
+				break;
+			case "7":
+				obrasoc.mostrarDomicilios();
+				break;
+			case "q":
+				System.out.println("Chau!");
+				break;
+				default:
+					System.out.println("Ingrese opcion valida!");
 			}
 		 }
 	}
